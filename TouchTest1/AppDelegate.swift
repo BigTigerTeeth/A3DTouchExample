@@ -8,14 +8,39 @@
 
 import UIKit
 
+
+enum QuickAction: String{
+    case openNewShop = "openNewShop"
+    case openBag = "openBag"
+    init(fullid: String) {
+        let shortId = fullid.components(separatedBy: ".").last!
+        self.init(rawValue: shortId)!
+    }
+}
+
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
+    func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
+        completionHandler(handleQuickAction(shortcutItem: shortcutItem))
+    }
+    
+    func handleQuickAction(shortcutItem: UIApplicationShortcutItem) -> Bool {
+        let fullId =  shortcutItem.type
+        let shortId = QuickAction.init(fullid: fullId)
+        let tabVC = window?.rootViewController as? UITabBarController
+        switch shortId {
+        case .openNewShop:
+            tabVC?.selectedIndex = 0
+        case .openBag:
+            tabVC?.selectedIndex = 1
+        }
+        return true
+    }
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
         return true
     }
 
